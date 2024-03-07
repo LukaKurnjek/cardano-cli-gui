@@ -72,32 +72,32 @@ The GUI functionality is seperated in 7 tabs and covers following things:
 be used to load and save files, e.g. key and address files. The tab also displays if the 
 *Debug mode* is set to ON or OFF.  
 
-![alt text](https://github.com/input-output-hk/cardano-cli-gui/blob/main/images/start.png) 
+![alt text](https://github.com/lukakurnjek/cardano-cli-gui/blob/main/images/start.png) 
 
 2. **Address tab**: load or generate verification and signing keys, payment addresses and 
 payment public key hashes.  
 
-![alt text](https://github.com/input-output-hk/cardano-cli-gui/blob/main/images/address.png)
+![alt text](https://github.com/lukakurnjek/cardano-cli-gui/blob/main/images/address.png)
 
 3. **Transactions tab**: check funds for a payment address and send funds to a receiving address.  
 
-![alt text](https://github.com/input-output-hk/cardano-cli-gui/blob/main/images/transactions.png)
+![alt text](https://github.com/lukakurnjek/cardano-cli-gui/blob/main/images/transactions.png)
 
 4. **Smart contracts - send tab**: build a script payment address for a script file and send funds 
 to the generated script address. You can attach a datum to the transaction.  
 
-![alt text](https://github.com/input-output-hk/cardano-cli-gui/blob/main/images/smart_contracts_send.png)
+![alt text](https://github.com/lukakurnjek/cardano-cli-gui/blob/main/images/smart_contracts_send.png)
 
 5. **Smart contracts - receive tab**: create a spending transactions that spends a script address UTXO. 
 You can attach a datum and a redeemer to the transaction and set a validity interval.  
 
-![alt text](https://github.com/input-output-hk/cardano-cli-gui/blob/main/images/smart_contracts_receive.png)
+![alt text](https://github.com/lukakurnjek/cardano-cli-gui/blob/main/images/smart_contracts_receive.png)
 
 6. **Query tab**: query an address for funds, query network information and display the transaction 
 hash for a signed transaction file.   
 
-![alt text](https://github.com/input-output-hk/cardano-cli-gui/blob/main/images/query.png)
+![alt text](https://github.com/lukakurnjek/cardano-cli-gui/blob/main/images/query.png)
 
 7. **Developer tab**: set the testnet number and update the era parameter.  
 
-![alt text](https://github.com/input-output-hk/cardano-cli-gui/blob/main/images/developer.png)
+![alt text](https://github.com/lukakurnjek/cardano-cli-gui/blob/main/images/developer.png)
