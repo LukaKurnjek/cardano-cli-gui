@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (QPushButton, QLabel, QLineEdit,
                              QWidget, QGridLayout, QMessageBox,
                              QRadioButton)
 
-# Widgets and functions for the wallet tab
+# Widgets and functions for the address tab 
 class Wallet(QWidget):
     def __init__(self):
         super().__init__()
@@ -22,7 +22,7 @@ class Wallet(QWidget):
         self.pkh_name = ""
 
         # Header text 
-        self.label_0_0 = QLabel("Manage wallet address and its keys.")
+        self.label_0_0 = QLabel("Manage Cardano address and its keys.")
 
         # Cardano picture
         picture_0_2 = QLabel("")
@@ -31,12 +31,12 @@ class Wallet(QWidget):
         picture_0_2.setScaledContents(True)
 
         # Widgets for verification key section 
-        self.label_1_0 = QLabel("Input verification key name:")
+        self.label_1_0 = QLabel("Input verification key file name or generate it:")
         self.input_2_0 = QLineEdit()
         self.button_2_1 = QPushButton("Set")
 
         # Widgets for signing key section 
-        self.label_3_0 = QLabel("Signing key name:")
+        self.label_3_0 = QLabel("Signing key file name:")
         self.input_4_0 = QLineEdit()
         self.button_5_0 = QPushButton("Generate both keys")
 
@@ -45,7 +45,7 @@ class Wallet(QWidget):
         self.button_5_0.clicked.connect(self.generate_skey_and_vkey)
 
         # Widgets for payment address section 
-        self.label_7_0 = QLabel("Input payment address name:")
+        self.label_7_0 = QLabel("Input payment address file name or generate it:")
         self.input_8_0 = QLineEdit()
         self.button_8_1 = QPushButton("Set")
         self.button_8_2 = QPushButton("Generate")
@@ -61,11 +61,11 @@ class Wallet(QWidget):
         self.button_10_1.clicked.connect(self.show_address) 
 
         # Widgets for payment address key hash section 
-        self.label_12_0 = QLabel("Payment public key hash name:")
+        self.label_12_0 = QLabel("Input payment public key hash file name or generate it:")  
         self.input_13_0 = QLineEdit()
         self.button_13_1 = QPushButton("Set")
         self.button_13_2 = QPushButton("Generate")
-        self.label_14_0 = QLabel("Key hash:")
+        self.label_14_0 = QLabel("Payment public key hash:")   
         self.input_15_0 = QLineEdit()
         self.button_15_1 = QPushButton("Show")
 
@@ -150,16 +150,22 @@ class Wallet(QWidget):
         skey_path = settings.folder_path + "/" + skey_name
         skey_exists = os.path.isfile(skey_path) 
 
-        if not vkey_exists:
-            msg = "Verification key does not exists.\n" + \
-                  "Please enter a valid file name."                       
+        if len(vkey_name) < 6:
+            msg = "Verification key has to have a .vkey file extension name.\n" + \
+                  "Please enter a file name with a .vkey extension." 
+            QMessageBox.warning(self, "Notification:", msg,
+                                QMessageBox.Close)
+            return None
+        elif not (vkey_name[-5:] == ".vkey"):
+            msg = "Verification key has to have a .vkey file extension name.\n" + \
+                  "Please enter a file name with a .vkey extension." 
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
 
-        if not (".vkey" in vkey_name):
-            msg = "Verification key has to have a .vkey file extension name.\n" + \
-                  "Please type in a file name with a .vkey extension." 
+        if not vkey_exists:
+            msg = "Verification key file does not exists.\n" + \
+                  "Please enter a valid file name."                       
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
@@ -192,7 +198,7 @@ class Wallet(QWidget):
                           "--signing-key-file " + skey_name 
 
                 if settings.debug_mode:
-                    print("Command below is defined in py-files/wallet.py line 190:")
+                    print("Command for generating signing and verification key files:")  
                     print(common_functions.format_command(command) + "\n")
                 else:
                     try:
@@ -217,22 +223,28 @@ class Wallet(QWidget):
         address_path = settings.folder_path + "/" + address_name
         address_exists = os.path.isfile(address_path)
 
-        if not (".addr" in address_name):
+        if len(address_name) < 6:
             msg = "Address file has to have a .addr file extension name.\n" + \
-                  "Please type in a file name with a .addr extension." 
+                  "Please enter a file name with a .addr extension." 
+            QMessageBox.warning(self, "Notification:", msg,
+                                QMessageBox.Close)
+            return None
+        elif not (address_name[-5:] == ".addr"):  
+            msg = "Address file has to have a .addr file extension name.\n" + \
+                  "Please enter a file name with a .addr extension." 
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
 
         if not address_exists:
-            msg = "Address does not exists.\n" + \
+            msg = "Address file does not exists.\n" + \
                   "Please enter a valid file name."                      
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
 
         self.address_name = address_name
-        msg = "Public address file successfully set."  
+        msg = "Address file successfully set."  
         QMessageBox.information(self, "Notification:", msg)
 
     def generate_address(self):
@@ -288,7 +300,7 @@ class Wallet(QWidget):
                   "--out-file " + address_name
 
         if settings.debug_mode:
-            print("Command below is defined in py-files/wallet.py line 285:")
+            print("Command for generating address file:")  
             print(common_functions.format_command(command) + "\n")
         else:
             try:
@@ -321,24 +333,30 @@ class Wallet(QWidget):
         pkh_name = self.input_13_0.text()
         pkh_path = settings.folder_path + "/" + pkh_name
         pkh_exists = os.path.isfile(pkh_path)
-        
-        if not pkh_exists:
-            msg = "Public key hash does not exists.\n" + \
-                  "Please specify a valid file name."                        
+
+        if len(pkh_name) < 5:
+            msg = "Public key hash has to have a .pkh file extension name.\n" + \
+                  "Please enter a file name with a .pkh extension." 
+            QMessageBox.warning(self, "Notification:", msg,
+                                QMessageBox.Close)
+            return None
+        elif not (pkh_name[-4:] == ".pkh"):
+            msg = "Public key hash has to have a .pkh file extension name.\n" + \
+                  "Please enter a file name with a .pkh extension." 
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
 
-        if not (".pkh" in pkh_name):
-            msg = "Public key hash has to have a .pkh file extension name.\n" + \
-                  "Please type in a file name with a .pkh extension." 
+        if not pkh_exists:
+            msg = "Public key hash does not exists.\n" + \
+                  "Please enter a valid file name."                        
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
 
         self.pkh_name = pkh_name
         msg = "Public key hash file successfully set."  
-        QMessageBox.information(self, "Notification:", msg)
+        QMessageBox.information(self, "Notification:", msg)   
 
     def generate_pkh(self):
         if self.vkey_name == "":
@@ -378,7 +396,7 @@ class Wallet(QWidget):
                   "--out-file " + pkh_name
         
         if settings.debug_mode:
-            print("Command below is defined in py-files/wallet.py line 376:")
+            print("Command for generating public key hash file:")  
             print(common_functions.format_command(command) + "\n")
         else:
             try:

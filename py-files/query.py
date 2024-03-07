@@ -33,10 +33,10 @@ class Query(QWidget):
         self.comboBox_2_0 = QComboBox()
 
         # Widgets for querying address section 
-        self.label_3_0 = QLabel("Type in a address file name:")
+        self.label_3_0 = QLabel("Input a address file name:")  
         self.input_4_0 = QLineEdit()
         self.button_4_1 = QPushButton("Set")
-        self.label_5_0 = QLabel("Funds for above payment address:")
+        self.label_5_0 = QLabel("Funds for above payment address:")  
         self.input_6_0 = QPlainTextEdit()
         self.button_6_1 = QPushButton("Querry\nfunds")
 
@@ -46,7 +46,7 @@ class Query(QWidget):
         self.button_8_1 = QPushButton("Querry\ninfo")
 
         # Widgets for transaction hash section
-        self.label_9_0 = QLabel("Show transaction hash for tx.signed file:")
+        self.label_9_0 = QLabel("Show transaction hash for tx.signed file:")  
         self.input_10_0 = QPlainTextEdit()
         self.button_10_1 = QPushButton("Show")
 
@@ -130,9 +130,15 @@ class Query(QWidget):
         address_path = settings.folder_path + "/" + address_name
         address_exists = os.path.isfile(address_path)
         
-        if not (".addr" in address_name):
+        if len(address_name) < 6:
             msg = "Address file has to have a .addr file extension name.\n" + \
-                  "Please type in a file name with a .addr extension." 
+                  "Please enter a file name with a .addr extension." 
+            QMessageBox.warning(self, "Notification:", msg,
+                                QMessageBox.Close)
+            return None
+        elif not (address_name[-5:] == ".addr"):  
+            msg = "Address file has to have a .addr file extension name.\n" + \
+                  "Please enter a file name with a .addr extension." 
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
@@ -173,7 +179,7 @@ class Query(QWidget):
                   net_part 
         
         if settings.debug_mode:
-            print("Command below is defined in py-files/query.py line 172:")
+            print("Command for querying funds of an address:")  
             print(common_functions.format_command(command) + "\n")
         else:
             try:
@@ -206,7 +212,7 @@ class Query(QWidget):
                   net_part 
         
         if settings.debug_mode:
-            print("Command below is defined in py-files/query.py line 206:")
+            print("Command for querying network information:")  
             print(common_functions.format_command(command) + "\n")
         else:
             try:
@@ -237,7 +243,7 @@ class Query(QWidget):
         command = "cardano-cli transaction txid --tx-file tx.signed"
 
         if settings.debug_mode:
-            print("Command below is defined in py-files/query.py line 238:")
+            print("Command for showing the hash of a transaction:")  
             print(common_functions.format_command(command) + "\n") 
         else:
             try:

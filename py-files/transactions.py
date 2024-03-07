@@ -27,7 +27,7 @@ class Transactions(QWidget):
         self.command_failed = False
 
         # Header text 
-        self.label_0_0 = QLabel("Send funds from your address to another one.")
+        self.label_0_0 = QLabel("Send funds from your address to another address.")   
         
         # Cardano picture
         picture_0_1 = QLabel("")
@@ -36,7 +36,7 @@ class Transactions(QWidget):
         picture_0_1.setScaledContents(True)
 
         # Widgets for payment address section 
-        self.label_1_0 = QLabel("Type in your address name (will be also used as change address):")
+        self.label_1_0 = QLabel("Input your address file name (will be also used as change address):")
         self.input_2_0 = QLineEdit()
         self.button_2_1 = QPushButton("Set")
         self.label_3_0 = QLabel("Select mainnet or testnet:")
@@ -52,17 +52,17 @@ class Transactions(QWidget):
         self.comboBox_4_0.currentTextChanged.connect(self.set_net)
 
         # Widgets for sending funds section 
-        self.label_7_0 = QLabel("Send amount (seperat decimal number with dot):")
-        self.radioButton_7_1 = QRadioButton("Ada")
+        self.label_7_0 = QLabel("Send amount (for ADA seperat decimal number with dot):")
+        self.radioButton_7_1 = QRadioButton("ADA")
         self.input_8_0 = QLineEdit()
-        self.radioButton_8_1 = QRadioButton("Lovelace")
-        self.label_9_0 = QLabel("Input receiving address name:")
+        self.radioButton_8_1 = QRadioButton("lovelace")
+        self.label_9_0 = QLabel("Input receiving address file name:")
         self.input_10_0 = QLineEdit()
         self.button_10_1 = QPushButton("Set")
-        self.label_11_0 = QLabel("Input UTxO from sending address:")
+        self.label_11_0 = QLabel("Input UTxO you want to spent from your address:")  
         self.input_12_0 = QLineEdit()
         self.button_12_1 = QPushButton("Set")
-        self.label_13_0 = QLabel("Type in your signing key name:")
+        self.label_13_0 = QLabel("Type in your signing key file name:")   
         self.input_14_0 = QLineEdit()
         self.button_14_1 = QPushButton("Set")
         self.button_16_0 = QPushButton("Send")
@@ -160,9 +160,15 @@ class Transactions(QWidget):
         address_path = settings.folder_path + "/" + address_name
         address_exists = os.path.isfile(address_path)
 
-        if not (".addr" in address_name):
+        if len(address_name) < 6:
             msg = "Address file has to have a .addr file extension name.\n" + \
-                  "Please type in a file name with a .addr extension." 
+                  "Please enter a file name with a .addr extension." 
+            QMessageBox.warning(self, "Notification:", msg,
+                                QMessageBox.Close)
+            return None
+        elif not (address_name[-5:] == ".addr"):  
+            msg = "Address file has to have a .addr file extension name.\n" + \
+                  "Please enter a file name with a .addr extension." 
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
@@ -197,7 +203,7 @@ class Transactions(QWidget):
             return None
 
         if self.net == "mainnet": 
-            net_part =  "--mainnet "
+            net_part =  "--mainnet " 
         elif self.net == "testnet":
             net_part = "--testnet-magic " + settings.testnet_magic + " "
         
@@ -206,7 +212,7 @@ class Transactions(QWidget):
                   net_part 
         
         if settings.debug_mode:
-            print("Command below is defined in py-files/transactions.py line 224:")
+            print("Command for querying funds of an address:")  
             print(common_functions.format_command(command) + "\n")
         else:
             try:
@@ -228,9 +234,15 @@ class Transactions(QWidget):
         receiving_address_path = settings.folder_path + "/" + receiving_address_name
         receiving_address_exists = os.path.isfile(receiving_address_path)
         
-        if not (".addr" in receiving_address_name):
+        if len(receiving_address_name) < 6:
             msg = "Address file has to have a .addr file extension name.\n" + \
-                  "Please type in a file name with a .addr extension." 
+                  "Please enter a file name with a .addr extension." 
+            QMessageBox.warning(self, "Notification:", msg,
+                                QMessageBox.Close)
+            return None
+        elif not (receiving_address_name[-5:] == ".addr"):  
+            msg = "Address file has to have a .addr file extension name.\n" + \
+                  "Please enter a file name with a .addr extension." 
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
@@ -272,10 +284,16 @@ class Transactions(QWidget):
         skey_name = self.input_14_0.text()
         skey_path = settings.folder_path + "/" + skey_name
         skey_exists = os.path.isfile(skey_path)
-        
-        if not (".skey" in skey_name):
+
+        if len(skey_name) < 6:
             msg = "Signing key has to have a .skey file extension name.\n" + \
-                  "Please type in a file name with a .skey extension." 
+                  "Please enter a file name with a .skey extension." 
+            QMessageBox.warning(self, "Notification:", msg,
+                                QMessageBox.Close)
+            return None
+        elif not (skey_name[-5:] == ".skey"):
+            msg = "Signing key has to have a .skey file extension name.\n" + \
+                  "Please enter a file name with a .skey extension." 
             QMessageBox.warning(self, "Notification:", msg,
                                 QMessageBox.Close)
             return None
@@ -404,9 +422,9 @@ class Transactions(QWidget):
         msg_sign = "Transaction sign command failed.\n" + msg_common
         msg_submit = "Transaction submit command failed.\n" + msg_common
 
-        debug_msg_build = "Command below is defined in py-files/transactions.py line 378:"
-        debug_msg_sign = "Command below is defined in py-files/transactions.py line 391:"
-        debug_msg_submit = "Command below is defined in py-files/transactions.py line 397:" 
+        debug_msg_build = "Command for building a transaction:"  
+        debug_msg_sign = "Command for signing a transaction:"  
+        debug_msg_submit = "Command for submitting a transaction:"   
                     
         manage_command(command_build_processed, msg_build, debug_msg_build)
         time.sleep(1)
@@ -416,6 +434,7 @@ class Transactions(QWidget):
         if not self.command_failed:
             manage_command(command_submit.split(), msg_submit, debug_msg_submit)
         if not self.command_failed and not settings.debug_mode:
-            msg = "Send transaction successfully submitted."  
+            msg = "Commads successfully executed.\n" + \
+                  "Look at console output for transaction info."  
             QMessageBox.information(self, "Notification:", msg) 
         self.command_failed = False
